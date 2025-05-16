@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sito sull'Operatore Socio-Sanitario (OSS): profilo, competenze, formazione e quiz interattivi.">
+    <meta name="keywords" content="OSS, operatore socio-sanitario, assistenza sanitaria, formazione OSS, quiz OSS">
+    <title>L'Operatore Socio-Sanitario (OSS)</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+            font-size: 18px;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/circuit-pattern.png');
+            opacity: 0.05;
+            z-index: -1;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+        }
+        header {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3.5em;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            animation: glow 2s infinite alternate;
+        }
+        header p {
+            margin: 10px 0 0;
+            font-size: 1.2em;
+            color: #ecf0f1;
+        }
+        nav {
+            background: #34495e;
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #3498db;
+        }
+        section {
+            background: rgba(20, 40, 60, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            margin-bottom: 50px;
+            animation: fadeIn 1.5s ease-in;
+            border: 1px solid #00d4ff;
+        }
+        section h2 {
+            color: #00d4ff;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        section h3 {
+            color: #00d4ff;
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        section p, section ul {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        section ul {
+            list-style-type: disc;
+            padding-left: 40px;
+        }
+        section ul ul {
+            list-style-type: circle;
+            padding-left: 30px;
+        }
+        .quiz-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .quiz-selector {
+            margin-bottom: 20px;
+        }
+        .quiz-selector select {
+            padding: 10px;
+            font-size: 1.2em;
+            background: rgba(30, 50, 70, 0.95);
+            color: #e0e0e0;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-timer {
+            font-size: 1.5em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+        .quiz-balls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quiz-ball {
+            width: 40px;
+            height: 40px;
+            background: rgba(30, 50, 70, 0.95);
+            border: 2px solid #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            color: #e0e0e0;
+            transition: background 0.3s ease;
+        }
+        .quiz-ball.correct {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        .quiz-ball.incorrect {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        .quiz-question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        .quiz-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .quiz-option {
+            background: rgba(30, 50, 70, 0.95);
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: 1px solid #00d4ff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 1.1em;
+        }
+        .quiz-option:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+        .quiz-feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+            display: none;
+        }
+        .correct {
+            color: #00ff00;
+        }
+        .incorrect {
+            color: #ff0000;
+        }
+        .quiz-result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .retry-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .retry-button:hover {
+            background: #3498db;
+        }
+        footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #00d4ff, 0 0 10 0 0 10px #00d4ff; }
+            to { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; }
+        }
+        @media (max-width: 768px) {
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+            section {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 2.5em;
+            }
+            header p {
+                font-size: 1em;
+            }
+            .quiz-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .quiz-ball {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>L'Operatore Socio-Sanitario (OSS)</h1>
+        <p>Assistenza e Supporto per il Benessere della Persona</p>
+    </header>
+
+    <nav>
+        <a href="#introduzione">Introduzione</a>
+        <a href="#profilo">Profilo</a>
+        <a href="#attivita">Attività</a>
+        <a href="#competenze">Competenze</a>
+        <a href="#formazione">Formazione</a>
+        <a href="#quiz">Quiz</a>
+    </nav>
+
+    <div class="container">
+        <section id="introduzione">
+            <h2>Introduzione all'Operatore Socio-Sanitario</h2>
+            <p>Nasce il 22 febbraio 2001 dall’accordo sancito dalla Conferenza Stato–Regioni, tra il Ministro della sanità, il Ministro per la solidarietà sociale e le regioni e province autonome di Trento e Bolzano, per l’individuazione della figura e del relativo profilo professionale dell'operatore socio-sanitario e per la definizione dell'ordinamento didattico dei corsi di formazione.</p>
+        </section>
+
+        <section id="profilo">
+            <h2>Profilo dell'OSS</h2>
+            <p>L’Operatore Socio-Sanitario (OSS) è colui che soddisfa i bisogni primari della persona, favorisce il benessere e l’autonomia del paziente. Svolge la sua attività sia nel settore sociale che in quello sanitario, in servizi di tipo socioassistenziale e socio-sanitario, residenziali o semiresidenziali, in ambiente ospedaliero e a domicilio dei seguenti utenti:</p>
+            <ul>
+                <li>Bambino</li>
+                <li>Persona anziana</li>
+                <li>Persona con problemi di psichiatria</li>
+                <li>Persona con handicap</li>
+                <li>Malato terminale o morente</li>
+            </ul>
+            <p>L’OSS lavora in collaborazione con gli altri operatori professionali preposti all’assistenza sanitaria e a quella sociale, secondo il criterio del lavoro multiprofessionale. Può lavorare come dipendente di strutture private quali: centri di accoglienza, assistenza ed ospitalità, case di riposo, comunità di recupero, case famiglia, centri educativi, ecc.</p>
+        </section>
+
+        <section id="attivita">
+            <h2>Attività dell'OSS (Allegato A)</h2>
+            <h3>1) Assistenza diretta ed aiuto domestico alberghiero</h3>
+            <p>Assiste la persona, in particolare non autosufficiente o allettata, nelle attività quotidiane e di igiene personale; realizza attività semplici di supporto diagnostico e terapeutico; collabora ad attività finalizzate al mantenimento delle capacità psico-fisiche residue, alla rieducazione, riattivazione, recupero funzionale; realizza attività di animazione e socializzazione di singoli e gruppi; coadiuva il personale sanitario e sociale nell’assistenza al malato anche terminale e morente; aiuta la gestione dell’utente nel suo ambito di vita; cura la pulizia e l’igiene ambientale.</p>
+            <h3>2) Intervento igienico sanitario e di carattere sociale</h3>
+            <p>Osserva e collabora alla rilevazione dei bisogni e delle condizioni di rischio-danno dell’utente; collabora alla attuazione degli interventi assistenziali; valuta, per quanto di competenza, gli interventi più appropriati da proporre; collabora alla attuazione di sistemi di verifica degli interventi; riconosce ed utilizza linguaggi e sistemi di comunicazione/relazione appropriati in relazione alle condizioni operative; mette in atto relazioni comunicazioni di aiuto con l’utente e la famiglia, per l’integrazione sociale ed il mantenimento e recupero della identità personale.</p>
+            <h3>3) Supporto gestionale, organizzativo e formativo</h3>
+            <p>Utilizza strumenti informativi di uso comune per la registrazione di quanto rilevato durante il servizio; collabora alla verifica della qualità del servizio; concorre, rispetto agli operatori dello stesso profilo, alla realizzazione dei tirocini ed alla loro valutazione; collabora alla definizione dei propri bisogni di formazione e frequenta corsi di aggiornamento; collabora, anche nei servizi assistenziali non di ricovero, alla realizzazione di attività semplici.</p>
+        </section>
+
+        <section id="competenze">
+            <h2>Competenze dell'OSS (Allegato B)</h2>
+            <h3>Competenze tecniche</h3>
+            <p>In base alle proprie competenze ed in collaborazione con altre figure professionali, l’operatore socio-sanitario sa attuare i piani di lavoro. È in grado di utilizzare metodologie di lavoro comuni (schede, protocolli ecc.). È in grado di collaborare con l’utente e la sua famiglia: nel governo della casa e dell’ambiente di vita, nell’igiene e cambio biancheria; nella preparazione e/o aiuto all’assunzione dei pasti; quando necessario, e a domicilio, per l’effettuazione degli acquisti; nella sanificazione e sanitizzazione ambientale. È in grado di curare la pulizia e la manutenzione di arredi e attrezzature, nonché la conservazione degli stessi e il riordino del materiale dopo l’assunzione dei pasti. Sa curare il lavaggio, l’asciugatura e la preparazione del materiale da sterilizzare. Sa garantire la raccolta e lo stoccaggio corretto dei rifiuti, il trasporto del materiale biologico sanitario, e dei campioni per gli esami diagnostici, secondo protocolli stabiliti. Sa svolgere attività finalizzate all’igiene personale, al cambio della biancheria, all’espletamento delle funzioni fisiologiche, all’aiuto nella deambulazione, all’uso corretto di presidi, ausili e attrezzature, all’apprendimento e mantenimento di posture corrette. In sostituzione e appoggio dei famigliari e su indicazione del personale preposto è in grado di: aiutare per la corretta assunzione dei farmaci prescritti e per il corretto utilizzo di apparecchi medicali di semplice uso; aiutare nella preparazione alle prestazioni sanitarie; osservare, riconoscere e riferire alcuni dei più comuni sintomi di allarme che l’utente può presentare (pallore, sudorazione ecc.); attuare interventi di primo soccorso; effettuare piccole medicazioni o cambio delle stesse; controllare e assistere la somministrazione delle diete; aiutare nelle attività di animazione e che favoriscono la socializzazione, il recupero ed il mantenimento di capacità cognitive e manuali; collaborare ad educare al movimento e favorire movimenti di mobilizzazione semplici su singoli e gruppi; provvedere al trasporto di utenti, anche allettati, in barella carrozzella; collaborare alla composizione della salma e provvedere al suo trasferimento; utilizzare specifici protocolli per mantenere la sicurezza dell’utente, riducendo al massimo il rischio; svolgere attività di informazione sui servizi del territorio e curare il disbrigo di pratiche burocratiche; accompagnare l’utente per l’accesso ai servizi.</p>
+            <h3>Competenze relative alle conoscenze richieste</h3>
+            <p>Conosce le principali tipologie di utenti e le problematiche connesse. Conosce le diverse fasi di elaborazione dei progetti di intervento personalizzati. Riconosce per i vari ambiti, le dinamiche relazionali appropriate per rapportarsi all’utente sofferente, disorientato, agitato, demente o handicappato mentale ecc. È in grado di riconoscere le situazioni ambientali e le condizioni dell’utente per le quali è necessario mettere in atto le differenti competenze tecniche. Conosce le modalità di rilevazione, segnalazione e comunicazione dei problemi generali e specifici relativi all’utente. Conosce le condizioni di rischio e le più comuni sindromi da prolungato allettamento e immobilizzazione. Conosce i principali interventi semplici di educazione alla salute, rivolti agli utenti e ai loro famigliari. Conosce l’organizzazione dei servizi sociali e sanitari e quella delle reti informali.</p>
+            <h3>Competenze relazionali</h3>
+            <p>Sa lavorare in equipe. Si avvicina e si rapporta con l’utente e con la famiglia, comunicando in modo partecipativo in tutte le attività quotidiane di assistenza; sa rispondere esaurientemente, coinvolgendo e stimolando al dialogo. È in grado di interagire, in collaborazione con il personale sanitario, con il malato morente. Sa coinvolgere le reti informali, sa rapportarsi con le strutture sociali, ricreative, culturali dei territori. Sa sollecitare ed organizzare momenti di socializzazione, fornendo sostegno alla partecipazione ad iniziative culturali e ricreative sia sul territorio che in ambito residenziale. È in grado di partecipare all’accoglimento dell’utente per assicurare una puntuale informazione sul servizio e sulle risorse. È in grado di gestire la propria attività con la dovuta riservatezza ed eticità. Affiancandosi ai tirocinanti, sa trasmettere i propri contenuti operativi.</p>
+        </section>
+
+        <section id="formazione">
+            <h2>Formazione dell'OSS</h2>
+            <h3>Requisiti di accesso</h3>
+            <p>Per l’accesso al corso di formazione dell’Operatore Socio-Sanitario sono richiesti i seguenti requisiti:</p>
+            <ul>
+                <li>Diploma di scuola dell’obbligo (licenza media)</li>
+                <li>Compimento del diciottesimo anno di età alla data di iscrizione al corso</li>
+                <li>Possesso del certificato di idoneità attestante l’assenza di minorazioni o malattie che possono impedire l’esercizio delle funzioni previste dal profilo professionale di O.S.S. rilasciato da una struttura pubblica del Servizio Sanitario Nazionale</li>
+            </ul>
+            <h3>Esame e modalità di svolgimento</h3>
+            <p>L’esame finale, per il conseguimento dell’attestato di qualifica di Operatore Socio-Sanitario, si articola in una prova orale sulle materie oggetto della formazione teorica e in una prova pratica consistente nella simulazione di un processo assistenziale di competenza. Gli studenti hanno l’obbligo della frequenza a tutte le attività formative previste dal corso. Non sono ammessi all’esame finale gli studenti che abbiano accumulato un numero di assenze superiori al 10% del monte ore complessivo.</p>
+            <h3>Attestato di qualifica</h3>
+            <p>Il corso è finalizzato al rilascio dell’attestato di qualifica professionale per lo svolgimento della professione OSS valido su tutto il territorio nazionale.</p>
+            <h3>Articolazione didattica</h3>
+            <p>L’articolazione didattica del corso è organizzata in due moduli:</p>
+            <ul>
+                <li>Un modulo di base costituito da 200 ore di formazione teorica.</li>
+                <li>Un modulo professionalizzante costituito da 800 ore, così articolate:
+                    <ul>
+                        <li>250 ore di formazione teorica</li>
+                        <li>100 ore di esercitazione</li>
+                        <li>450 ore di tirocinio nei servizi previsti nel curriculum formativo</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Spetta alle regioni e province autonome, nel contesto del proprio sistema della formazione, quantificare il credito formativo da attribuirsi a titoli e servizi pregressi, in relazione all’acquisizione dell’attestato di qualifica relativo alla figura professionale di operatore socio-sanitario prevedendo misure compensative in tutti i casi in cui la formazione pregressa risulti insufficiente, per la parte sanitaria o per quella sociale rispetto a quella prevista dal presente decreto.</p>
+            <h3>Obiettivi di modulo e materie di insegnamento (Allegato C)</h3>
+            <h4>Primo modulo (200 ore di teoria)</h4>
+            <p>Acquisire elementi di base utili per individuare i bisogni delle persone e le più comuni problematiche relazionali; distinguere i sistemi organizzativi socio-assistenziali e la rete dei servizi; conoscere i fondamenti dell’etica, i concetti generali che stanno alla base della sicurezza e della salute dei lavoratori sui luoghi di lavoro, nonché i principi che regolano il rapporto di dipendenza del lavoratore (doveri, responsabilità, diritti...); conoscere i concetti di base dell’igiene e i criteri attraverso i quali mantenere la salubrità dell’ambiente.</p>
+            <h4>Secondo modulo (250 ore di teoria, 100 esercitazioni, 450 tirocinio)</h4>
+            <p>Riconoscere e classificare i bisogni ed interpretare le problematiche assistenziali derivanti in relazione alle principali caratteristiche del bambino, della persona anziana, della persona con problemi psichiatrici, con handicaps, ecc. o in situazioni di pericolo; identificare tutti gli elementi necessari alla pianificazione dell’assistenza, collaborando con le figure professionali preposte; riconoscere le principali alterazioni delle funzioni vitali al fine di attivare altre competenze e/o utilizzare tecniche comuni di primo intervento; applicare le conoscenze acquisite per: mantenimento di un ambiente terapeutico adeguato - cura della persona - mantenimento delle capacità residue - recupero funzionale; conoscere ed applicare le diverse metodologie operative presenti nelle sedi di tirocinio; conoscere i principali aspetti psico-sociali dell’individuo e del gruppo al fine di sviluppare abilità comunicative adeguate alle diverse situazioni relazionali degli utenti e degli operatori nonché conoscere le caratteristiche, le finalità e le prestazioni di assistenza sociale allo scopo di concorrere, per quanto di competenza, al mantenimento dell’autonomia e dell’integrazione sociale dell’utente.</p>
+            <h4>Modulo facoltativo</h4>
+            <p>Tematica professionale specifica: (50 ore teoria, 50 esercitazioni, 100 tirocinio): approfondire le competenze acquisite con speciale riferimento ad una particolare tipologia di utenza o ad uno specifico ambiente assistenziale.</p>
+            <h4>Principali materie di insegnamento</h4>
+            <ul>
+                <li><strong>Area socio-culturale, istituzionale e legislativa:</strong>
+                    <ul>
+                        <li>Elementi di legislazione nazionale e regionale a contenuto socio-assistenziale e previdenziale</li>
+                        <li>Elementi di legislazione sanitaria e organizzazione dei servizi (normativa specifica OSS)</li>
+                        <li>Elementi di etica e deontologia</li>
+                        <li>Elementi di diritto del lavoro e il rapporto di dipendenza</li>
+                    </ul>
+                </li>
+                <li><strong>Area psicologica e sociale:</strong>
+                    <ul>
+                        <li>Elementi di psicologia e sociologia</li>
+                        <li>Aspetti psico-relazionali ed interventi assistenziali in rapporto alle specificità dell’utenza</li>
+                    </ul>
+                </li>
+                <li><strong>Area igienico-sanitaria ed area tecnico-operativa:</strong>
+                    <ul>
+                        <li>Elementi di igiene</li>
+                        <li>Disposizioni generali in materia di protezione della salute e della sicurezza dei lavoratori</li>
+                        <li>Igiene dell’ambiente e comfort alberghiero</li>
+                        <li>Interventi assistenziali rivolti alla persona in rapporto a particolari situazioni di vita e tipologia di utenza</li>
+                        <li>Metodologia del lavoro sociale e sanitario</li>
+                        <li>Assistenza sociale</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section id="quiz">
+            <h2>Quiz: Testa le Tue Conoscenze sull'OSS</h2>
+            <p>Seleziona un quiz e rispondi alle 30 domande entro 30 minuti. Le palline si illumineranno man mano che procedi!</p>
+            <div class="quiz-container">
+                <div class="quiz-selector">
+                    <select id="quiz-select" onchange="selectQuiz()">
+                        <option value="0">Seleziona un Quiz</option>
+                        <option value="1">Quiz 1</option>
+                        <option value="2">Quiz 2</option>
+                        <option value="3">Quiz 3</option>
+                        <option value="4">Quiz 4</option>
+                        <option value="5">Quiz 5</option>
+                    </select>
+                </div>
+                <div class="quiz-timer" id="quiz-timer" style="display: none;">Tempo rimanente: 30:00</div>
+                <div class="quiz-balls" id="quiz-balls" style="display: none;"></div>
+                <div class="quiz-question" id="quiz-question"></div>
+                <div class="quiz-options" id="quiz-options"></div>
+                <div class="quiz-feedback" id="quiz-feedback"></div>
+                <div class="quiz-result" id="quiz-result"></div>
+                <button class="retry-button" id="retry-button" style="display: none;">Riprova</button>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 L'Operatore Socio-Sanitario - Tutti i diritti riservati</p>
+    </footer>
+
+    <script>
+        const allQuestions = [
+            // Quiz 1
+            [
+                { question: "Quando nasce la figura dell'OSS?", options: ["15 marzo 1999", "10 giugno 2003", "22 febbraio 2001", "5 aprile 2000"], correct: "22 febbraio 2001" },
+                { question: "Chi ha sancito l'accordo per l'OSS?", options: ["ASL", "Università", "Imprese private", "Conferenza Stato-Regioni"], correct: "Conferenza Stato-Regioni" },
+                { question: "Quale obiettivo principale ha l'OSS?", options: ["Gestire ospedali", "Eseguire interventi chirurgici", "Favorire benessere e autonomia", "Insegnare"], correct: "Favorire benessere e autonomia" },
+                { question: "In quale settore opera l'OSS?", options: ["Sanitario e sociale", "Industriale", "Agricolo", "Educativo"], correct: "Sanitario e sociale" },
+                { question: "Quale utente assiste l'OSS?", options: ["Persona con handicap", "Atleta professionista", "Studente universitario", "Impiegato"], correct: "Persona con handicap" },
+                { question: "Dove può lavorare l'OSS?", options: ["Scuole elementari", "Fabbriche", "Case di riposo", "Uffici"], correct: "Case di riposo" },
+                { question: "Quale requisito è necessario per il corso OSS?", options: ["Laurea", "Diploma superiore", "Licenza media", "Certificato sportivo"], correct: "Licenza media" },
+                { question: "Quante ore totali prevede il corso OSS?", options: ["1500 ore", "500 ore", "800 ore", "1000 ore"], correct: "1000 ore" },
+                { question: "Quale prova è inclusa nell’esame finale?", options: ["Prova fisica", "Prova scritta", "Prova di gruppo", "Prova pratica"], correct: "Prova pratica" },
+                { question: "Qual è il limite massimo di assenze?", options: ["5%", "20%", "10%", "15%"], correct: "10%" },
+                { question: "Quante ore di teoria ha il modulo di base?", options: ["450 ore", "200 ore", "250 ore", "100 ore"], correct: "200 ore" },
+                { question: "Quale attività svolge l’OSS?", options: ["Gestione amministrativa", "Igiene personale", "Diagnosi medica", "Insegnamento"], correct: "Igiene personale" },
+                { question: "Cosa supporta l’OSS nell’assistenza?", options: ["Produzione industriale", "Marketing", "Socializzazione", "Ricerca scientifica"], correct: "Socializzazione" },
+                { question: "Quale competenza tecnica ha l’OSS?", options: ["Programmazione software", "Gestione rifiuti", "Progettazione edile", "Analisi finanziaria"], correct: "Gestione rifiuti" },
+                { question: "Cosa osserva l’OSS?", options: ["Clima", "Mercati finanziari", "Condizioni di rischio", "Tendenze moda"], correct: "Condizioni di rischio" },
+                { question: "Quale strumento usa l’OSS per registrare dati?", options: ["Mappe", "Bilanci", "Schede", "Grafici"], correct: "Schede" },
+                { question: "Quale conoscenza deve avere l’OSS?", options: ["Astronomia", "Tipologie di utenti", "Ingegneria", "Leggi fiscali"], correct: "Tipologie di utenti" },
+                { question: "Come comunica l’OSS con l’utente?", options: ["Solo per iscritto", "Con gesti", "In modo partecipativo", "Con linguaggio tecnico"], correct: "In modo partecipativo" },
+                { question: "Quale attività formativa svolge l’OSS?", options: ["Progettazione corsi", "Supporto ai tirocinanti", "Insegnamento universitario", "Ricerca medica"], correct: "Supporto ai tirocinanti" },
+                { question: "Quale materia è nel primo modulo?", options: ["Letteratura", "Fisica", "Matematica", "Etica"], correct: "Etica" },
+                { question: "Quale competenza relazionale ha l’OSS?", options: ["Competizione", "Isolamento", "Lavoro in equipe", "Gestione solitaria"], correct: "Lavoro in equipe" },
+                { question: "Cosa favorisce l’OSS nel paziente?", options: ["Sedentarietà", "Isolamento", "Dipendenza", "Autonomia"], correct: "Autonomia" },
+                { question: "Quale ambiente cura l’OSS?", options: ["Magazzino", "Ufficio", "Laboratorio", "Ambiente di vita"], correct: "Ambiente di vita" },
+                { question: "Quale intervento semplice conosce l’OSS?", options: ["Analisi di laboratorio", "Radiologia", "Primo soccorso", "Chirurgia"], correct: "Primo soccorso" },
+                { question: "Quale rete coinvolge l’OSS?", options: ["Reti sportive", "Reti commerciali", "Reti informali", "Reti aziendali"], correct: "Reti informali" },
+                { question: "Quale attività di supporto svolge l’OSS?", options: ["Marketing", "Progettazione", "Gestione finanziaria", "Trasporto utenti"], correct: "Trasporto utenti" },
+                { question: "Quale principio regola il rapporto di lavoro?", options: ["Improvvisazione", "Neutralità", "Competizione", "Responsabilità"], correct: "Responsabilità" },
+                { question: "Quale modulo include il tirocinio?", options: ["Teorico", "Facoltativo", "Professionalizzante", "Di base"], correct: "Professionalizzante" },
+                { question: "Quale certificazione rilascia il corso?", options: ["Patente", "Certificato sportivo", "Diploma universitario", "Attestato di qualifica"], correct: "Attestato di qualifica" },
+                { question: "Quale compito sociale svolge l’OSS?", options: ["Amministrazione", "Ricerca", "Integrazione sociale", "Vendita"], correct: "Integrazione sociale" }
+            ],
+            // Quiz 2
+            [
+                { question: "Chi ha partecipato all’accordo OSS?", options: ["ASL", "Università", "Ministri e Regioni", "Imprese private"], correct: "Ministri e Regioni" },
+                { question: "Quale bisogno soddisfa l’OSS?", options: ["Bisogni educativi", "Bisogni tecnici", "Bisogni finanziari", "Bisogni primari"], correct: "Bisogni primari" },
+                { question: "In quale contesto opera l’OSS?", options: ["Commerciale", "Sportivo", "Industriale", "Residenziale"], correct: "Residenziale" },
+                { question: "Quale struttura privata impiega l’OSS?", options: ["Negozio", "Scuola", "Comunità di recupero", "Fabbrica"], correct: "Comunità di recupero" },
+                { question: "Quale età è richiesta per il corso OSS?", options: ["25 anni", "16 anni", "18 anni", "21 anni"], correct: "18 anni" },
+                { question: "Quale certificato è necessario per l’OSS?", options: ["Idoneità accademica", "Idoneità lavorativa", "Idoneità fisica", "Idoneità sportiva"], correct: "Idoneità fisica" },
+                { question: "Quante ore di tirocinio prevede il corso?", options: ["100 ore", "250 ore", "200 ore", "450 ore"], correct: "450 ore" },
+                { question: "Quale prova orale verte sulle materie teoriche?", options: ["Prova pratica", "Prova intermedia", "Esame finale", "Prova iniziale"], correct: "Esame finale" },
+                { question: "Quale modulo ha 100 ore di esercitazioni?", options: ["Teorico", "Facoltativo", "Di base", "Professionalizzante"], correct: "Professionalizzante" },
+                { question: "Quale attività di assistenza svolge l’OSS?", options: ["Progettazione", "Insegnamento", "Supporto diagnostico", "Gestione aziendale"], correct: "Supporto diagnostico" },
+                { question: "Cosa valuta l’OSS?", options: ["Analisi di mercato", "Progetti edilizi", "Bilanci economici", "Interventi appropriati"], correct: "Interventi appropriati" },
+                { question: "Quale competenza usa l’OSS con la famiglia?", options: ["Insegnamento", "Marketing", "Gestione finanziaria", "Comunicazione di aiuto"], correct: "Comunicazione di aiuto" },
+                { question: "Quale compito gestionale ha l’OSS?", options: ["Analisi dati", "Gestione magazzino", "Verifica qualità servizio", "Progettazione corsi"], correct: "Verifica qualità servizio" },
+                { question: "Quale conoscenza riguarda i rischi?", options: ["Storia", "Teorie fisiche", "Sindromi da allettamento", "Leggi fiscali"], correct: "Sindromi da allettamento" },
+                { question: "Quale attività di igiene svolge l’OSS?", options: ["Ricerca", "Vendita", "Sanitizzazione ambientale", "Progettazione"], correct: "Sanitizzazione ambientale" },
+                { question: "Quale protocollo usa l’OSS per i rifiuti?", options: ["Accumulo", "Riciclo totale", "Smaltimento libero", "Raccolta corretta"], correct: "Raccolta corretta" },
+                { question: "Quale competenza relazionale favorisce l’OSS?", options: ["Neutralità", "Competizione", "Isolamento", "Socializzazione"], correct: "Socializzazione" },
+                { question: "Quale materia è nell’area socio-culturale?", options: ["Fisica", "Letteratura", "Matematica", "Legislazione sanitaria"], correct: "Legislazione sanitaria" },
+                { question: "Quale compito formativo svolge l’OSS?", options: ["Valuta corsi", "Progetta corsi", "Insegna corsi", "Frequenta aggiornamenti"], correct: "Frequenta aggiornamenti" },
+                { question: "Quale attività pratica esegue l’OSS?", options: ["Radiografie", "Analisi di laboratorio", "Piccole medicazioni", "Interventi chirurgici"], correct: "Piccole medicazioni" },
+                { question: "Quale supporto offre l’OSS al malato terminale?", options: ["Ricerca", "Terapia", "Diagnosi", "Assistenza"], correct: "Assistenza" },
+                { question: "Quale rete sociale coinvolge l’OSS?", options: ["Club sportivi", "Enti governativi", "Strutture ricreative", "Aziende commerciali"], correct: "Strutture ricreative" },
+                { question: "Quale principio etico segue l’OSS?", options: ["Neutralità", "Competizione", "Improvvisazione", "Riservatezza"], correct: "Riservatezza" },
+                { question: "Quale competenza tecnica riguarda i pasti?", options: ["Progettazione menu", "Vendita alimenti", "Analisi nutrizionale", "Preparazione pasti"], correct: "Preparazione pasti" },
+                { question: "Quale attività di movimento promuove l’OSS?", options: ["Corsa", "Ginnastica acrobatica", "Allenamento intensivo", "Mobilizzazione semplice"], correct: "Mobilizzazione semplice" },
+                { question: "Quale conoscenza organizzativa ha l’OSS?", options: ["Marketing", "Ingegneria", "Servizi sanitari", "Leggi fiscali"], correct: "Servizi sanitari" },
+                { question: "Quale compito burocratico svolge l’OSS?", options: ["Analisi dati", "Progettazione", "Gestione finanziaria", "Disbrigo pratiche"], correct: "Disbrigo pratiche" },
+                { question: "Quale modulo facoltativo approfondisce?", options: ["Fisica", "Letteratura", "Matematica", "Tipologia di utenza"], correct: "Tipologia di utenza" },
+                { question: "Quale competenza include il primo soccorso?", options: ["Teoriche", "Gestionali", "Relazionali", "Tecniche"], correct: "Tecniche" },
+                { question: "Quale attività di pulizia svolge l’OSS?", options: ["Ricerca", "Vendita", "Progettazione", "Manutenzione arredi"], correct: "Manutenzione arredi" }
+            ],
+            // Quiz 3
+            [
+                { question: "Quale ministro ha partecipato all’accordo OSS?", options: ["Ministro del lavoro", "Ministro della sanità", "Ministro dell’economia", "Ministro dell’istruzione"], correct: "Ministro della sanità" },
+                { question: "Quale caratteristica promuove l’OSS?", options: ["Dipendenza", "Isolamento", "Benessere", "Competizione"], correct: "Benessere" },
+                { question: "Quale servizio offre l’OSS?", options: ["Sportivo", "Industriale", "Commerciale", "Socio-assistenziale"], correct: "Socio-assistenziale" },
+                { question: "Quale struttura impiega l’OSS?", options: ["Negozi", "Fabbriche", "Case famiglia", "Scuole"], correct: "Case famiglia" },
+                { question: "Quale requisito fisico è richiesto per l’OSS?", options: ["Forza fisica", "Peso specifico", "Altezza minima", "Assenza di malattie"], correct: "Assenza di malattie" },
+                { question: "Quante ore teoriche ha il modulo professionalizzante?", options: ["100 ore", "450 ore", "250 ore", "200 ore"], correct: "250 ore" },
+                { question: "Quale simulazione è nella prova pratica?", options: ["Progettazione", "Analisi dati", "Gestione aziendale", "Processo assistenziale"], correct: "Processo assistenziale" },
+                { question: "Quale attestato rilascia il corso OSS?", options: ["Patente", "Certificato sportivo", "Diploma universitario", "Qualifica professionale"], correct: "Qualifica professionale" },
+                { question: "Quale attività di supporto diagnostico svolge l’OSS?", options: ["Ricerca", "Terapia", "Diagnosi", "Trasporto campioni"], correct: "Trasporto campioni" },
+                { question: "Quale competenza sociale ha l’OSS?", options: ["Analisi", "Vendita", "Progettazione", "Rilevazione bisogni"], correct: "Rilevazione bisogni" },
+                { question: "Quale strumento gestionale usa l’OSS?", options: ["Strumenti musicali", "Attrezzature sportive", "Strumenti informativi", "Macchinari pesanti"], correct: "Strumenti informativi" },
+                { question: "Quale conoscenza relazionale ha l’OSS?", options: ["Storia", "Teorie fisiche", "Leggi fiscali", "Dinamiche relazionali"], correct: "Dinamiche relazionali" },
+                { question: "Quale attività di igiene personale svolge l’OSS?", options: ["Ricerca", "Vendita", "Progettazione", "Cambio biancheria"], correct: "Cambio biancheria" },
+                { question: "Quale compito di animazione svolge l’OSS?", options: ["Progettazione", "Insegnamento", "Gestione aziendale", "Socializzazione gruppi"], correct: "Socializzazione gruppi" },
+                { question: "Quale materia è nell’area igienico-sanitaria?", options: ["Letteratura", "Fisica", "Matematica", "Igiene ambientale"], correct: "Igiene ambientale" },
+                { question: "Quale competenza tecnica riguarda la sicurezza?", options: ["Marketing", "Progettazione", "Analisi finanziaria", "Protocolli di sicurezza"], correct: "Protocolli di sicurezza" },
+                { question: "Quale attività di assistenza svolge l’OSS?", options: ["Ricerca", "Insegnamento", "Gestione finanziaria", "Aiuto deambulazione"], correct: "Aiuto deambulazione" },
+                { question: "Quale conoscenza riguarda i servizi?", options: ["Astronomia", "Ingegneria", "Leggi fiscali", "Reti informali"], correct: "Reti informali" },
+                { question: "Quale principio etico segue l’OSS?", options: ["Improvvisazione", "Neutralità", "Competizione", "Eticità"], correct: "Eticità" },
+                { question: "Quale compito relazionale svolge l’OSS?", options: ["Isolamento", "Competizione", "Gestione solitaria", "Stimolare dialogo"], correct: "Stimolare dialogo" },
+                { question: "Quale attività di recupero promuove l’OSS?", options: ["Recupero sportivo", "Recupero accademico", "Recupero finanziario", "Recupero funzionale"], correct: "Recupero funzionale" },
+                { question: "Quale competenza riguarda i tirocini?", options: ["Analisi dati", "Gestione magazzino", "Progettazione corsi", "Valutazione tirocini"], correct: "Valutazione tirocini" },
+                { question: "Quale materia è nell’area psicologica?", options: ["Letteratura", "Fisica", "Matematica", "Psicologia"], correct: "Psicologia" },
+                { question: "Quale attività di trasporto svolge l’OSS?", options: ["Trasporto aereo", "Trasporto scolastico", "Trasporto merci", "Trasporto in barella"], correct: "Trasporto in barella" },
+                { question: "Quale conoscenza riguarda i bisogni?", options: ["Storia", "Teorie fisiche", "Leggi fiscali", "Classificazione bisogni"], correct: "Classificazione bisogni" },
+                { question: "Quale compito burocratico svolge l’OSS?", options: ["Analisi dati", "Progettazione", "Gestione finanziaria", "Accompagnamento servizi"], correct: "Accompagnamento servizi" },
+                { question: "Quale modulo facoltativo include tirocinio?", options: ["Teorico", "Professionalizzante", "Di base", "Facoltativo"], correct: "Facoltativo" },
+                { question: "Quale competenza tecnica riguarda le diete?", options: ["Progettazione menu", "Vendita alimenti", "Analisi nutrizionale", "Controllo diete"], correct: "Controllo diete" },
+                { question: "Quale attività di pulizia svolge l’OSS?", options: ["Ricerca", "Vendita", "Progettazione", "Pulizia ambientale"], correct: "Pulizia ambientale" },
+                { question: "Quale competenza relazionale riguarda il malato terminale?", options: ["Isolamento", "Competizione", "Gestione solitaria", "Interazione sanitaria"], correct: "Interazione sanitaria" }
+            ],
+            // Quiz 4
+            [
+                { question: "Quale ente ha partecipato all’accordo OSS?", options: ["Imprese private", "ASL", "Università", "Province autonome"], correct: "Province autonome" },
+                { question: "Quale ruolo ha l’OSS nel benessere?", options: ["Promuove competizione", "Promuove isolamento", "Promuove dipendenza", "Promuove autonomia"], correct: "Promuove autonomia" },
+                { question: "Quale ambiente di lavoro usa l’OSS?", options: ["Sportivo", "Commerciale", "Industriale", "Domiciliare"], correct: "Domiciliare" },
+                { question: "Quale struttura impiega l’OSS?", options: ["Negozi", "Fabbriche", "Scuole", "Centri educativi"], correct: "Centri educativi" },
+                { question: "Quale ente rilascia il certificato di idoneità?", options: ["Imprese", "Università", "ASL privata", "Servizio Sanitario Nazionale"], correct: "Servizio Sanitario Nazionale" },
+                { question: "Quante ore totali di modulo professionalizzante?", options: ["100 ore", "450 ore", "200 ore", "800 ore"], correct: "800 ore" },
+                { question: "Quale prova valuta la teoria?", options: ["Prova di gruppo", "Prova fisica", "Prova scritta", "Prova orale"], correct: "Prova orale" },
+                { question: "Quale validità ha l’attestato OSS?", options: ["Internazionale", "Locale", "Regionale", "Nazionale"], correct: "Nazionale" },
+                { question: "Quale attività di supporto terapeutico svolge l’OSS?", options: ["Ricerca", "Terapia", "Diagnosi", "Mantenimento capacità"], correct: "Mantenimento capacità" },
+                { question: "Quale competenza sociale riguarda la famiglia?", options: ["Analisi", "Vendita", "Progettazione", "Integrazione sociale"], correct: "Integrazione sociale" },
+                { question: "Quale compito organizzativo ha l’OSS?", options: ["Progettazione", "Insegnamento", "Gestione aziendale", "Registrazione dati"], correct: "Registrazione dati" },
+                { question: "Quale conoscenza riguarda le sindromi?", options: ["Storia", "Teorie fisiche", "Leggi fiscali", "Prolungato allettamento"], correct: "Prolungato allettamento" },
+                { question: "Quale attività di igiene ambientale svolge l’OSS?", options: ["Ricerca", "Vendita", "Progettazione", "Sanificazione"], correct: "Sanificazione" },
+                { question: "Quale compito di socializzazione svolge l’OSS?", options: ["Progettazione", "Insegnamento", "Gestione aziendale", "Animazione singoli"], correct: "Animazione singoli" },
+                { question: "Quale materia è nell’area legislativa?", options: ["Letteratura", "Fisica", "Matematica", "Diritto del lavoro"], correct: "Diritto del lavoro" },
+                { question: "Quale competenza tecnica riguarda i presidi?", options: ["Marketing", "Progettazione", "Analisi finanziaria", "Uso corretto presidi"], correct: "Uso corretto presidi" },
+                { question: "Quale attività di assistenza riguarda le posture?", options: ["Ricerca", "Insegnamento", "Gestione finanziaria", "Mantenimento posture"], correct: "Mantenimento posture" },
+                { question: "Quale conoscenza riguarda l’organizzazione?", options: ["Astronomia", "Ingegneria", "Leggi fiscali", "Servizi sociali"], correct: "Servizi sociali" },
+                { question: "Quale principio etico segue l’OSS?", options: ["Improvvisazione", "Neutralità", "Competizione", "Riservatezza"], correct: "Riservatezza" },
+                { question: "Quale compito relazionale riguarda l’utente?", options: ["Isolamento", "Competizione", "Gestione solitaria", "Coinvolgimento dialogo"], correct: "Coinvolgimento dialogo" },
+                { question: "Quale attività di recupero promuove l’OSS?", options: ["Recupero sportivo", "Recupero accademico", "Recupero finanziario", "Rieducazione"], correct: "Rieducazione" },
+                { question: "Quale competenza riguarda la formazione?", options: ["Analisi dati", "Gestione magazzino", "Progettazione corsi", "Frequenta corsi"], correct: "Frequenta corsi" },
+                { question: "Quale materia è nell’area tecnica?", options: ["Letteratura", "Fisica", "Matematica", "Metodologia lavoro"], correct: "Metodologia lavoro" },
+                { question: "Quale attività di trasporto svolge l’OSS?", options: ["Trasporto aereo", "Trasporto scolastico", "Trasporto merci", "Trasferimento salma"], correct: "Trasferimento salma" },
+                { question: "Quale conoscenza riguarda i progetti?", options: ["Storia", "Teorie fisiche", "Leggi fiscali", "Progetti personalizzati"], correct: "Progetti personalizzati" },
+                { question: "Quale compito burocratico svolge l’OSS?", options: ["Analisi dati", "Progettazione", "Gestione finanziaria", "Informazione servizi"], correct: "Informazione servizi" },
+                { question: "Quale modulo facoltativo include esercitazioni?", options: ["Teorico", "Professionalizzante", "Di base", "Facoltativo"], correct: "Facoltativo" },
+                { question: "Quale competenza tecnica riguarda i farmaci?", options: ["Progettazione farmaci", "Vendita farmaci", "Analisi farmacologica", "Assunzione farmaci"], correct: "Assunzione farmaci" },
+                { question: "Quale attività di pulizia svolge l’OSS?", options: ["Ricerca", "Vendita", "Progettazione", "Riordino materiale"], correct: "Riordino materiale" },
+                { question: "Quale competenza relazionale riguarda i tirocinanti?", options: ["Isolamento", "Competizione", "Gestione solitaria", "Trasmissione contenuti"], correct: "Trasmissione contenuti" }
+            ],
+            // Quiz 5
+            [
+                { question: "Quale data segna la nascita dell’OSS?", options: ["5 aprile 2000", "22 febbraio 2001", "15 marzo 1999", "10 giugno 2003"], correct: "22 febbraio 2001" },
+                { question: "Quale obiettivo ha l’OSS con il paziente?", options: ["Promuove competizione", "Promuove isolamento", "Promuove dipendenza", "Promuove autonomia"], correct: "Promuove autonomia" },
+                { question: "Quale servizio svolge l’OSS?", options: ["Sportivo", "Industriale", "Commerciale", "Socio-sanitario"], correct: "Socio-sanitario" },
+                { question: "Quale struttura impiega l’OSS?", options: ["Negozi", "Fabbriche", "Scuole", "Centri di accoglienza"], correct: "Centri di accoglienza" },
+                { question: "Quale requisito scolastico è richiesto?", options: ["Certificato sportivo", "Diploma superiore", "Laurea", "Licenza media"], correct: "Licenza media" },
+                { question: "Quante ore di esercitazioni nel corso OSS?", options: ["250 ore", "450 ore", "200 ore", "100 ore"], correct: "100 ore" },
+                { question: "Quale prova pratica simula un processo?", options: ["Progettazione", "Analisi dati", "Gestione aziendale", "Assistenza"], correct: "Assistenza" },
+                { question: "Quale validità ha l’attestato OSS?", options: ["Internazionale", "Locale", "Regionale", "Nazionale"], correct: "Nazionale" },
+                { question: "Quale attività di supporto sociale svolge l’OSS?", options: ["Ricerca", "Terapia", "Diagnosi", "Animazione gruppi"], correct: "Animazione gruppi" },
+                { question: "Quale competenza sociale riguarda i bisogni?", options: ["Analisi", "Vendita", "Progettazione", "Valutazione interventi"], correct: "Valutazione interventi" },
+                { question: "Quale compito formativo ha l’OSS?", options: ["Progettazione", "Insegnamento", "Gestione aziendale", "Supporto tirocini"], correct: "Supporto tirocini" },
+                { question: "Quale conoscenza riguarda le condizioni?", options: ["Storia", "Teorie fisiche", "Leggi fiscali", "Condizioni di rischio"], correct: "Condizioni di rischio" },
+                { question: "Quale attività di igiene personale svolge l’OSS?", options: ["Ricerca", "Vendita", "Progettazione", "Espletamento funzioni"], correct: "Espletamento funzioni" },
+                { question: "Quale compito di assistenza svolge l’OSS?", options: ["Progettazione", "Insegnamento", "Gestione aziendale", "Aiuto pasti"], correct: "Aiuto pasti" },
+                { question: "Quale materia è nell’area igienico-sanitaria?", options: ["Letteratura", "Fisica", "Matematica", "Protezione salute"], correct: "Protezione salute" },
+                { question: "Quale competenza tecnica riguarda gli ausili?", options: ["Marketing", "Progettazione", "Analisi finanziaria", "Uso ausili"], correct: "Uso ausili" },
+                { question: "Quale attività di assistenza riguarda i sintomi?", options: ["Ricerca", "Insegnamento", "Gestione finanziaria", "Riconoscimento sintomi"], correct: "Riconoscimento sintomi" },
+                { question: "Quale conoscenza riguarda i servizi?", options: ["Astronomia", "Ingegneria", "Leggi fiscali", "Organizzazione servizi"], correct: "Organizzazione servizi" },
+                { question: "Quale principio etico segue l’OSS?", options: ["Improvvisazione", "Neutralità", "Competizione", "Eticità"], correct: "Eticità" },
+                { question: "Quale compito relazionale riguarda la famiglia?", options: ["Isolamento", "Competizione", "Gestione solitaria", "Stimolare dialogo"], correct: "Stimolare dialogo" },
+                { question: "Quale attività di recupero promuove l’OSS?", options: ["Recupero sportivo", "Recupero accademico", "Recupero finanziario", "Recupero capacità"], correct: "Recupero capacità" },
+                { question: "Quale competenza riguarda la verifica?", options: ["Analisi dati", "Gestione magazzino", "Progettazione corsi", "Verifica interventi"], correct: "Verifica interventi" },
+                { question: "Quale materia è nell’area psicologica?", options: ["Letteratura", "Fisica", "Matematica", "Sociologia"], correct: "Sociologia" },
+                { question: "Quale attività di trasporto svolge l’OSS?", options: ["Trasporto aereo", "Trasporto scolastico", "Trasporto merci", "Trasporto utenti"], correct: "Trasporto utenti" },
+                { question: "Quale conoscenza riguarda i bisogni?", options: ["Storia", "Teorie fisiche", "Leggi fiscali", "Rilevazione bisogni"], correct: "Rilevazione bisogni" },
+                { question: "Quale compito burocratico svolge l’OSS?", options: ["Analisi dati", "Progettazione", "Gestione finanziaria", "Disbrigo pratiche"], correct: "Disbrigo pratiche" },
+                { question: "Quale modulo facoltativo include teoria?", options: ["Teorico", "Professionalizzante", "Di base", "Facoltativo"], correct: "Facoltativo" },
+                { question: "Quale competenza tecnica riguarda le medicazioni?", options: ["Progettazione farmaci", "Vendita farmaci", "Analisi farmacologica", "Cambio medicazioni"], correct: "Cambio medicazioni" },
+                { question: "Quale attività di pulizia svolge l’OSS?", options: ["Ricerca", "Vendita", "Progettazione", "Lavaggio materiale"], correct: "Lavaggio materiale" },
+                { question: "Quale competenza relazionale riguarda l’utente?", options: ["Isolamento", "Competizione", "Gestione solitaria", "Rapporto partecipativo"], correct: "Rapporto partecipativo" }
+            ]
+        ];
+
+        let currentQuiz = null;
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let timerInterval = null;
+
+        function selectQuiz() {
+            const quizSelect = document.getElementById('quiz-select');
+            const selectedQuiz = parseInt(quizSelect.value);
+            if (selectedQuiz === 0) {
+                resetQuiz();
+                return;
+            }
+            resetQuiz();
+            currentQuiz = shuffleArray([...allQuestions[selectedQuiz - 1]]);
+            startQuiz();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function shuffleOptions(options, correct) {
+            let shuffled = [...options];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function startQuiz() {
+            document.getElementById('quiz-timer').style.display = 'block';
+            document.getElementById('quiz-balls').style.display = 'flex';
+            const ballsContainer = document.getElementById('quiz-balls');
+            ballsContainer.innerHTML = '';
+            for (let i = 1; i <= 30; i++) {
+                const ball = document.createElement('div');
+                ball.className = 'quiz-ball';
+                ball.textContent = i;
+                ballsContainer.appendChild(ball);
+            }
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            let timeLeft = 30 * 60; // 30 minuti in secondi
+            const timerDisplay = document.getElementById('quiz-timer');
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `Tempo rimanente: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(timerInterval);
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentQuiz.length) {
+                endQuiz();
+                return;
+            }
+            const question = currentQuiz[currentQuestionIndex];
+            document.getElementById('quiz-question').textContent = question.question;
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            const shuffledOptions = shuffleOptions(question.options, question.correct);
+            shuffledOptions.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'quiz-option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => checkAnswer(option, question.correct);
+                optionsContainer.appendChild(optionElement);
+            });
+            document.getElementById('quiz-feedback').style.display = 'none';
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedback = document.getElementById('quiz-feedback');
+            const balls = document.getElementsByClassName('quiz-ball');
+            if (selected === correct) {
+                feedback.textContent = 'Risposta corretta!';
+                feedback.className = 'quiz-feedback correct';
+                balls[currentQuestionIndex].classList.add('correct');
+                correctAnswers++;
+            } else {
+                feedback.textContent = `Risposta sbagliata. La risposta corretta era: ${correct}`;
+                feedback.className = 'quiz-feedback incorrect';
+                balls[currentQuestionIndex].classList.add('incorrect');
+            }
+            feedback.style.display = 'block';
+            currentQuestionIndex++;
+            setTimeout(loadQuestion, 1500);
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-timer').style.display = 'none';
+            document.getElementById('quiz-question').textContent = '';
+            document.getElementById('quiz-options').innerHTML = '';
+            document.getElementById('quiz-feedback').style.display = 'none';
+            const result = document.getElementById('quiz-result');
+            result.innerHTML = `Quiz completato! Risposte corrette: ${correctAnswers} su ${currentQuiz.length}`;
+            document.getElementById('retry-button').style.display = 'block';
+        }
+
+        function resetQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-timer').style.display = 'none';
+            document.getElementById('quiz-balls').style.display = 'none';
+            document.getElementById('quiz-question').textContent = '';
+            document.getElementById('quiz-options').innerHTML = '';
+            document.getElementById('quiz-feedback').style.display = 'none';
+            document.getElementById('quiz-result').innerHTML = '';
+            document.getElementById('retry-button').style.display = 'none';
+        }
+
+        document.getElementById('retry-button').onclick = () => {
+            resetQuiz();
+            startQuiz();
+        };
+    </script>
+</body>
+</html>
